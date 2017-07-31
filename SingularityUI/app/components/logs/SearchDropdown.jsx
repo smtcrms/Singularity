@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { OverlayTrigger, Popover, InputGroup, Button, FormControl, Glyphicon } from 'react-bootstrap';
 
 import { connect } from 'react-redux';
@@ -10,35 +9,19 @@ class SearchDropdown extends React.Component {
     super(...args);
     this.state = {
       searchValue: this.props.search,
-      dropdownOpen: false
     };
-    _.bindAll(this, 'handleSearchToggle', 'handleSearchUpdate', 'toggleSearchDropdown', 'handleSearchKeyDown');
-  }
-
-  handleSearchToggle(isOpen, event, {source}) {
-    if (source !== 'select') {
-      this.toggleSearchDropdown();
-    }
-    ReactDOM.findDOMNode(this.refs.searchInput).focus();
+    _.bindAll(this, 'handleSearchUpdate', 'handleSearchKeyDown');
   }
 
   handleSearchUpdate() {
     this.props.setCurrentSearch(this.state.searchValue);
   }
 
-  toggleSearchDropdown() {
-    this.setState({
-      dropdownOpen: !this.state.dropdownOpen
-    });
-  }
-
   handleSearchKeyDown(event) {
     if (event.keyCode === 13) { // Enter: commit search and close
       this.handleSearchUpdate();
-      this.toggleSearchDropdown();
     } else if (event.keyCode === 27) { // Escape: clear search and commit
       this.setState({searchValue: this.props.search});
-      this.toggleSearchDropdown();
     }
   }
 
@@ -55,10 +38,7 @@ class SearchDropdown extends React.Component {
             onChange={(event) => this.setState({searchValue: event.target.value})}
           />
           <InputGroup.Button>
-            <Button
-              bsStyle="info"
-              onClick={this.handleSearchUpdate}
-            >
+            <Button bsStyle="info" onClick={this.handleSearchUpdate}>
               <Glyphicon glyph="search" />
             </Button>
           </InputGroup.Button>
@@ -68,10 +48,7 @@ class SearchDropdown extends React.Component {
 
     return (
       <OverlayTrigger trigger="click" rootClose={true} placement="bottom" overlay={popover}>
-        <Button
-          bsSize="small"
-          bsStyle={this.props.search ? 'info' : 'default'}
-        >
+        <Button bsSize="small" bsStyle={this.props.search ? 'info' : 'default'}>
           <Glyphicon glyph="search" /> <span className="caret" />
         </Button>
       </OverlayTrigger>
