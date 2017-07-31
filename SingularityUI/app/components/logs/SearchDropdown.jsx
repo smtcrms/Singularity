@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import classNames from 'classnames';
+import { OverlayTrigger, Popover, InputGroup, Button, FormControl, Glyphicon } from 'react-bootstrap';
 
 import { connect } from 'react-redux';
 import { setCurrentSearch } from '../../actions/log';
@@ -9,12 +9,16 @@ class SearchDropdown extends React.Component {
   constructor(...args) {
     super(...args);
     this.state = {
-      searchValue: this.props.search
+      searchValue: this.props.search,
+      dropdownOpen: false
     };
     _.bindAll(this, 'handleSearchToggle', 'handleSearchUpdate', 'toggleSearchDropdown', 'handleSearchKeyDown');
   }
 
-  handleSearchToggle() {
+  handleSearchToggle(isOpen, event, {source}) {
+    if (source !== 'select') {
+      this.toggleSearchDropdown();
+    }
     ReactDOM.findDOMNode(this.refs.searchInput).focus();
   }
 
@@ -23,7 +27,9 @@ class SearchDropdown extends React.Component {
   }
 
   toggleSearchDropdown() {
-    $(ReactDOM.findDOMNode(this.refs.searchButton)).dropdown('toggle');
+    this.setState({
+      dropdownOpen: !this.state.dropdownOpen
+    });
   }
 
   handleSearchKeyDown(event) {
@@ -37,28 +43,38 @@ class SearchDropdown extends React.Component {
   }
 
   render() {
-    const classes = ['btn', 'btn-sm', 'dropdown-toggle'];
-    if (this.props.search === '') {
-      classes.push('btn-default');
-    } else {
-      classes.push('btn-info');
-    }
+    const popover = (
+      <Popover id="grep-popover">
+        <InputGroup>
+          <FormControl
+            ref="searchInput"
+            type="text"
+            placeholder="Grep logs"
+            value={this.state.searchValue}
+            onKeyDown={this.handleSearchKeyDown}
+            onChange={(event) => this.setState({searchValue: event.target.value})}
+          />
+          <InputGroup.Button>
+            <Button
+              bsStyle="info"
+              onClick={this.handleSearchUpdate}
+            >
+              <Glyphicon glyph="search" />
+            </Button>
+          </InputGroup.Button>
+        </InputGroup>
+      </Popover>
+    );
+
     return (
-      <div className="btn-group" title="Grep">
-        <button ref="searchButton" id="searchDDToggle" type="button" className={classNames(classes)} data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.handleSearchToggle}>
-          <span className="glyphicon glyphicon-search"></span> <span className="caret"></span>
-        </button>
-        <ul className="dropdown-menu dropdown-menu-right">
-          <li>
-            <div className="input-group log-search">
-              <input ref="searchInput" type="text" className="form-control" placeholder="Grep Logs" value={this.state.searchValue} onKeyDown={this.handleSearchKeyDown} onChange={(e) => this.setState({searchValue: e.target.value})} />
-              <span className="input-group-btn">
-                <button className="btn btn-info no-margin" type="button" onClick={this.handleSearchUpdate}><span className="glyphicon glyphicon-search"></span></button>
-              </span>
-            </div>
-          </li>
-        </ul>
-      </div>
+      <OverlayTrigger trigger="click" rootClose={true} placement="bottom" overlay={popover}>
+        <Button
+          bsSize="small"
+          bsStyle={this.props.search ? 'info' : 'default'}
+        >
+          <Glyphicon glyph="search" /> <span className="caret" />
+        </Button>
+      </OverlayTrigger>
     );
   }
 }

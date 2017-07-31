@@ -1,14 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router';
-import classNames from 'classnames';
 import NewColorDropdown from './NewColorDropdown';
 import NewTasksDropdown from './NewTasksDropdown';
+import SearchDropdown from './SearchDropdown';
 
 import { connect } from 'react-redux';
 import { switchViewMode } from '../../actions/log';
 import { jumpAllToTop, jumpAllToBottom, setColor, toggleTailerGroup } from '../../actions/tailer';
 
 class NewHeader extends React.Component {
+
   renderBreadcrumbs() {
     if (this.props.paths.length > 1) {
       return (<li>(multiple paths)</li>);
@@ -93,6 +94,7 @@ class NewHeader extends React.Component {
           </div>
           <div className="col-md-3 hidden-xs tail-buttons">
             {this.renderSwitchToOldTailer()}
+            <SearchDropdown />
             {this.renderTasksDropdown()}
             <NewColorDropdown activeColor={this.props.activeColor} onSetColor={this.props.setColor} />
             {this.renderAnchorButtons()}
