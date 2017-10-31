@@ -116,7 +116,7 @@ export const Host = (
     id="host"
     key="host"
     cellData={
-      (rowData) => (rowData.taskId ? rowData.taskId.host : rowData.host)
+      (rowData) => rowData.offers[0].hostname
     }
     cellRender={
       (cellData) => (
@@ -135,7 +135,7 @@ export const Rack = (
     id="rack"
     key="rack"
     cellData={
-      (rowData) => (rowData.taskId ? rowData.taskId.rackId : rowData.rackId)
+      (rowData) => rowData.rackId
     }
     cellRender={
       (cellData) => (
